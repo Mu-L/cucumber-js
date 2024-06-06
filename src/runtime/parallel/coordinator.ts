@@ -24,9 +24,6 @@ export interface INewCoordinatorOptions {
   newId: IdGenerator.NewId
   pickleIds: string[]
   supportCodeLibrary: SupportCodeLibrary
-  requireModules: string[]
-  requirePaths: string[]
-  importPaths: string[]
   numberOfWorkers: number
 }
 
@@ -58,12 +55,9 @@ export default class Coordinator implements IRuntime {
   private readonly newId: IdGenerator.NewId
   private readonly pickleIds: string[]
   private assembledTestCases: IAssembledTestCases
-  private inProgressPickles: Record<string, messages.Pickle>
-  private workers: Record<string, IWorker>
+  private readonly inProgressPickles: Record<string, messages.Pickle>
+  private readonly workers: Record<string, IWorker>
   private readonly supportCodeLibrary: SupportCodeLibrary
-  private readonly requireModules: string[]
-  private readonly requirePaths: string[]
-  private readonly importPaths: string[]
   private readonly numberOfWorkers: number
   private readonly logger: ILogger
   private success: boolean
@@ -78,9 +72,6 @@ export default class Coordinator implements IRuntime {
     options,
     newId,
     supportCodeLibrary,
-    requireModules,
-    requirePaths,
-    importPaths,
     numberOfWorkers,
   }: INewCoordinatorOptions) {
     this.cwd = cwd
@@ -91,9 +82,6 @@ export default class Coordinator implements IRuntime {
     this.options = options
     this.newId = newId
     this.supportCodeLibrary = supportCodeLibrary
-    this.requireModules = requireModules
-    this.requirePaths = requirePaths
-    this.importPaths = importPaths
     this.pickleIds = Array.from(pickleIds)
     this.numberOfWorkers = numberOfWorkers
     this.success = true
@@ -107,11 +95,10 @@ export default class Coordinator implements IRuntime {
       worker.state = WorkerState.idle
       this.awakenWorkers(worker)
     } else if (doesHaveValue(message.jsonEnvelope)) {
-      const envelope = messages.parseEnvelope(message.jsonEnvelope)
+      const envelope = message.jsonEnvelope
       this.eventBroadcaster.emit('envelope', envelope)
       if (doesHaveValue(envelope.testCaseFinished)) {
-        delete this.inProgressPickles[worker.id]
-        this.parseTestCaseResult(envelope.testCaseFinished)
+        this.parseTestCaseResult(envelope.testCaseFinished, worker.id)
       }
     } else {
       throw new Error(
@@ -159,10 +146,7 @@ export default class Coordinator implements IRuntime {
     })
     const initializeCommand: IWorkerCommand = {
       initialize: {
-        filterStacktraces: this.options.filterStacktraces,
-        requireModules: this.requireModules,
-        requirePaths: this.requirePaths,
-        importPaths: this.importPaths,
+        supportCodeCoordinates: this.supportCodeLibrary.originalCoordinates,
         supportCodeIds: {
           stepDefinitionIds: this.supportCodeLibrary.stepDefinitions.map(
             (s) => s.id
@@ -202,15 +186,19 @@ export default class Coordinator implements IRuntime {
     }
   }
 
-  parseTestCaseResult(testCaseFinished: messages.TestCaseFinished): void {
+  parseTestCaseResult(
+    testCaseFinished: messages.TestCaseFinished,
+    workerId: string
+  ): void {
     const { worstTestStepResult } = this.eventDataCollector.getTestCaseAttempt(
       testCaseFinished.testCaseStartedId
     )
-    if (
-      !testCaseFinished.willBeRetried &&
-      shouldCauseFailure(worstTestStepResult.status, this.options)
-    ) {
-      this.success = false
+    if (!testCaseFinished.willBeRetried) {
+      delete this.inProgressPickles[workerId]
+
+      if (shouldCauseFailure(worstTestStepResult.status, this.options)) {
+        this.success = false
+      }
     }
   }
 

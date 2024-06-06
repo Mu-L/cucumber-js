@@ -9,6 +9,33 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 
 ## [Unreleased]
 
+## [10.8.0] - 2024-05-26
+### Added
+- Add `world` and `context` to allow accessing state from arrow functions ([#2402](https://github.com/cucumber/cucumber-js/pull/2402))
+
+## [10.7.0] - 2024-05-11
+### Added
+- Explicit support for Node.js 22 ([#2405](https://github.com/cucumber/cucumber-js/pull/2405))
+
+### Fixed
+- Ensure that parallel workers remain in-progress during retries ([#2404](https://github.com/cucumber/cucumber-js/pull/2404))
+
+## [10.6.0] - 2024-04-25
+### Added
+- Add `loader` option for ESM loader hooks [#2399](https://github.com/cucumber/cucumber-js/pull/2399)
+
+## [10.5.1] - 2024-04-21
+### Fixed
+- Type signature of `defineParameterType` correctly reflects `transformer` property's optionality.
+
+## [10.5.0] - 2024-04-21
+### Added
+- Allow supplying error details for pending steps ([#2393](https://github.com/cucumber/cucumber-js/pull/2393))
+- Allow defining a default function profile to be used as profile builder ([#2384](https://github.com/cucumber/cucumber-js/pull/2384))
+
+### Fixed
+- Various typing improvements and other fixes ([#2390](https://github.com/cucumber/cucumber-js/pull/2390), [#2391](https://github.com/cucumber/cucumber-js/pull/2391), [#2394](https://github.com/cucumber/cucumber-js/pull/2394))
+
 ## [10.4.0] - 2024-04-07
 ### Added
 - Add more debug logging around code loading ([#2389](https://github.com/cucumber/cucumber-js/pull/2389))
@@ -1593,7 +1620,12 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v10.4.0...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v10.8.0...HEAD
+[10.8.0]: https://github.com/cucumber/cucumber-js/compare/v10.7.0...v10.8.0
+[10.7.0]: https://github.com/cucumber/cucumber-js/compare/v10.6.0...v10.7.0
+[10.6.0]: https://github.com/cucumber/cucumber-js/compare/v10.5.1...v10.6.0
+[10.5.1]: https://github.com/cucumber/cucumber-js/compare/v10.5.0...v10.5.1
+[10.5.0]: https://github.com/cucumber/cucumber-js/compare/v10.4.0...v10.5.0
 [10.4.0]: https://github.com/cucumber/cucumber-js/compare/v10.3.2...v10.4.0
 [10.3.2]: https://github.com/cucumber/cucumber-js/compare/v10.3.1...v10.3.2
 [10.3.1]: https://github.com/cucumber/cucumber-js/compare/v10.3.0...v10.3.1

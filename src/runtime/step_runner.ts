@@ -7,6 +7,7 @@ import {
   doesNotHaveValue,
   valueOrDefault,
 } from '../value_checker'
+import { runInTestCaseScope } from './scope'
 import { create } from './stopwatch'
 import { formatError } from './format_error'
 
@@ -47,12 +48,14 @@ export async function run({
     )
 
     if (invocationData.validCodeLengths.includes(stepDefinition.code.length)) {
-      const data = await UserCodeRunner.run({
-        argsArray: invocationData.parameters,
-        fn: stepDefinition.code,
-        thisArg: world,
-        timeoutInMilliseconds,
-      })
+      const data = await runInTestCaseScope({ world }, async () =>
+        UserCodeRunner.run({
+          argsArray: invocationData.parameters,
+          fn: stepDefinition.code,
+          thisArg: world,
+          timeoutInMilliseconds,
+        })
+      )
       error = data.error
       result = data.result
     } else {
@@ -68,10 +71,13 @@ export async function run({
   } else if (result === 'pending') {
     status = messages.TestStepResultStatus.PENDING
   } else if (doesHaveValue(error)) {
-    details = formatError(error, filterStackTraces)
     status = messages.TestStepResultStatus.FAILED
   } else {
     status = messages.TestStepResultStatus.PASSED
+  }
+
+  if (doesHaveValue(error)) {
+    details = formatError(error, filterStackTraces)
   }
 
   return {

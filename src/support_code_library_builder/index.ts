@@ -36,7 +36,7 @@ import { buildParameterType } from './build_parameter_type'
 import { SourcedParameterTypeRegistry } from './sourced_parameter_type_registry'
 
 interface IStepDefinitionConfig {
-  code: any
+  code: Function
   line: number
   options: any
   keyword: GherkinStepKeyword
@@ -52,14 +52,14 @@ interface ITestCaseHookDefinitionConfig {
 }
 
 interface ITestStepHookDefinitionConfig {
-  code: any
+  code: Function
   line: number
   options: any
   uri: string
 }
 
 interface ITestRunHookDefinitionConfig {
-  code: any
+  code: Function
   line: number
   options: any
   uri: string
@@ -458,6 +458,7 @@ export class SupportCodeLibraryBuilder {
       requireModules: [],
       requirePaths: [],
       importPaths: [],
+      loaders: [],
     }
   ): void {
     this.cwd = cwd

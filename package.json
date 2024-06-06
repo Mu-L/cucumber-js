@@ -8,7 +8,7 @@
     "gherkin",
     "tests"
   ],
-  "version": "10.4.0",
+  "version": "10.8.0",
   "funding": "https://opencollective.com/cucumber",
   "homepage": "https://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com>",
@@ -17,6 +17,7 @@
     "abelalmeida <abelalmeida@u.boisestate.edu>",
     "Adam Ark <Adam-ARK@users.noreply.github.com>",
     "Ádám Gólya <adam.golya@lab.coop>",
+    "Ahmed Ashour (https://github.com/asashour)",
     "ahulab <alexbaluha@gmail.com>",
     "Alon Diamant <diamant.alon@gmail.com>",
     "Artem Bronitsky <quex@yandex.ru>",
@@ -114,6 +115,7 @@
     "Marcel Hoyer <mhoyer@pixelplastic.de>",
     "Marco Muller <marco@remotemetering.net>",
     "Mark Amery <markamery@btinternet.com>",
+    "Mark Stein (https://github.com/markstein)",
     "Martin Delille <martin@phonations.com>",
     "Máté Karácsony <k_mate@inf.elte.hu>",
     "Mateusz Derks <mateusz.derks@schibsted.pl>",
@@ -130,6 +132,7 @@
     "Niklas Närhinen <niklas@narhinen.net>",
     "Niyaz Akhmetov <axmet180@gmail.com>",
     "Noah Davis <noahd1@yahoo.com>",
+    "notaphplover (https://github.com/notaphplover)",
     "Oliver Odo (https://github.com/olivierodo)",
     "Oliver Rogers <oli.rogers@gmail.com>",
     "Olivier Melcher <olivier.melcher@gmail.com>",
@@ -161,6 +164,7 @@
     "Tom V <tom@toc.com>",
     "Tomer Ben-Rachel <tomerpacific@gmail.com>",
     "Tristan Dunn <tristanzdunn@gmail.com>",
+    "Tristan Zander <tristan.zander@ncino.com>",
     "unknown <jharlin@NormanDev2.telogical.com>",
     "Valerio Innocenti Sedili <valerio.innocenti.ext@yoox.com>",
     "Vasily Shelkov <vasilydshelkov@gmail.com>",
@@ -206,7 +210,7 @@
     "node": "18 || >=20"
   },
   "enginesTested": {
-    "node": "18 || 20 || 21"
+    "node": "18 || 20 || 21 || 22"
   },
   "dependencies": {
     "@cucumber/ci-environment": "10.0.1",
@@ -291,7 +295,7 @@
     "eslint-plugin-node": "11.1.0",
     "eslint-plugin-standard": "5.0.0",
     "eslint-plugin-unicorn": "^48.0.1",
-    "express": "4.18.2",
+    "express": "4.19.2",
     "fs-extra": "10.1.0",
     "genversion": "3.1.1",
     "mocha": "10.2.0",
@@ -338,8 +342,7 @@
     "test-coverage": "nyc --silent mocha 'src/**/*_spec.ts' 'compatibility/**/*_spec.ts' && nyc --silent --no-clean node bin/cucumber.js --tags \"not @source-mapping\" && nyc report --reporter=lcov",
     "test": "npm run lint && npm run exports-test && npm run types-test && npm run unit-test && npm run cck-test && npm run feature-test",
     "types-test": "tsd",
-    "unit-test": "mocha 'src/**/*_spec.ts'",
-    "update-dependencies": "npx npm-check-updates --upgrade"
+    "unit-test": "mocha 'src/**/*_spec.ts'"
   },
   "bin": {
     "cucumber-js": "bin/cucumber.js"

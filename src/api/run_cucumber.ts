@@ -4,6 +4,7 @@ import { EventDataCollector } from '../formatter/helpers'
 import { emitMetaMessage, emitSupportCodeMessages } from '../cli/helpers'
 import { resolvePaths } from '../paths'
 import { SupportCodeLibrary } from '../support_code_library_builder/types'
+import { version } from '../version'
 import { IRunOptions, IRunEnvironment, IRunResult } from './types'
 import { makeRuntime } from './runtime'
 import { initializeFormatters } from './formatters'
@@ -28,12 +29,25 @@ export async function runCucumber(
   const mergedEnvironment = mergeEnvironment(environment)
   const { cwd, stdout, stderr, env, logger } = mergedEnvironment
 
+  logger.debug(`Running cucumber-js ${version} 
+Working directory: ${cwd}
+Running from: ${__dirname}  
+`)
+
   const newId = IdGenerator.uuid()
 
   const supportCoordinates =
     'originalCoordinates' in options.support
       ? options.support.originalCoordinates
-      : options.support
+      : Object.assign(
+          {
+            requireModules: [],
+            requirePaths: [],
+            loaders: [],
+            importPaths: [],
+          },
+          options.support
+        )
 
   const pluginManager = await initializeForRunCucumber(
     logger,
@@ -61,8 +75,9 @@ export async function runCucumber(
           cwd,
           newId,
           requirePaths,
-          importPaths,
           requireModules: supportCoordinates.requireModules,
+          importPaths,
+          loaders: supportCoordinates.loaders,
         })
 
   const eventBroadcaster = new EventEmitter()
@@ -86,6 +101,7 @@ export async function runCucumber(
     eventDataCollector,
     configuration: options.formats,
     supportCodeLibrary,
+    pluginManager,
   })
   await emitMetaMessage(eventBroadcaster, env)
 
@@ -138,14 +154,11 @@ export async function runCucumber(
     pickleIds,
     newId,
     supportCodeLibrary,
-    requireModules: supportCoordinates.requireModules,
-    requirePaths,
-    importPaths,
     options: options.runtime,
   })
   const success = await runtime.start()
-  await cleanupFormatters()
   await pluginManager.cleanup()
+  await cleanupFormatters()
 
   return {
     success: success && !formatterStreamError,
